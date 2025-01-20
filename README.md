@@ -1,2 +1,3 @@
 # aplikasi-timbangan
-aplikasi timbangan berbasis web base local host dengan database MySQL
+aplikasi timbangan berbasis webbase local host dengan database MySQL
+Connect cctv
