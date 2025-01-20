@@ -1,38 +1,46 @@
-const sqlite3 = require('sqlite3').verbose();
+const mysql = require('mysql');
 
-// Membuat atau membuka file database
-let db = new sqlite3.Database('database.db', (err) => {
+// Membuat koneksi ke database MySQL
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'your_password',
+    database: 'nama_database'
+});
+
+// Menghubungkan ke MySQL
+db.connect((err) => {
     if (err) {
-        console.error(err.message);
+        console.error('Error connecting to MySQL:', err.message);
         throw err;
     }
-    console.log('Connected to the SQLite database.');
+    console.log('Connected to the MySQL database.');
 });
 
 // Membuat tabel data_timbang
-db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS data_timbang (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        no_record TEXT,
-        mobil TEXT,
-        sopir TEXT,
-        tgl_masuk TEXT,
-        tara INTEGER,
-        bruto INTEGER,
-        netto INTEGER
-    )`, (err) => {
-        if (err) {
-            console.error(err.message);
-            throw err;
-        }
-        console.log("Tabel data_timbang berhasil dibuat atau sudah ada");
-    });
+db.query(`CREATE TABLE IF NOT EXISTS data_timbang (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    no_record VARCHAR(255),
+    mobil VARCHAR(255),
+    sopir VARCHAR(255),
+    tgl_masuk DATE,
+    tara INT,
+    bruto INT,
+    netto INT
+)`, (err, result) => {
+    if (err) {
+        console.error('Error creating table:', err.message);
+        throw err;
+    }
+    console.log("Tabel data_timbang berhasil dibuat atau sudah ada");
 });
 
-// Menutup koneksi database
-db.close((err) => {
-    if (err) {
-        console.error(err.message);
-    }
-    console.log('Close the database connection.');
-});
+// Jangan lupa untuk menutup koneksi database saat sudah tidak digunakan
+// db.end((err) => {
+//     if (err) {
+//         console.error('Error closing the connection:', err.message);
+//     }
+//     console.log('Closed the MySQL database connection.');
+// });
+
+module.exports = db;
